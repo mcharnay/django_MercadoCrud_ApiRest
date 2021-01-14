@@ -1,0 +1,189 @@
+1-. se crea proyecto con requeriments, y app de nombre app indexandola en settings.
+2-. se crea dentro de app, templates>app en el cual van los html
+3-.se crea dentro app raiz otro archivo url, el cual lleva las rutas de nuestros html, y se index en el urt del proyecto no app.
+4- dentro de app raiz, se crea carpeta stitic, y dentro otra carpeta app el cual lleva js, css ye imagenes.
+5-. se usan bloques para repetir codigo
+
+6-.models y migates, crear super user
+
+7-. Para administrar las tablas creadas en modelos, hay que ponerles en archivo admin.py
+    -Ahí mismo se puede poner más datos que salgan en la vista de admin.
+    -SIEMPRE QUE SE HACE UNA CLASE, IMPORTARLO EN EL ADMIN.
+
+
+8-. subir imagenes.
+    al creasr requeriments.txt, dentro poner pillow y ejecutar pip install -r requirements.txt
+
+9 en raiz del proyecto crear carpeta media, donde se subirán las imágenes e import os en settings.
+    -importar en settings
+    -crear metodo en url del proyecto, no la app.
+    -modificar el model y aplicar migraciones.
+
+10-.Personalizar admin
+    -se usa el modulo: django-admin-interface
+    -Poner en requeriments.txt django-admin-interface
+    -poersinalizar el nombre de la app que sale en el admin, en AppConfig en apps.py de la app carpeta app raiz
+
+11-. Para mostrar los productos de la bd, se hace la consulta dentro de las vistas (recordar el import del modelo.)
+
+
+============================================================
+
+Formulario
+1-.Hay que tener creado el template, crear una clase de él en el modelo, ponerlo en el admin.py,
+ en el módulo app, crear forms.py.
+
+ En requeriments.txt instalar crispy forms
+ pip install -r requirements.txt
+
+cargarlo en el settings.py e importarlo en html 
+
+
+============================================================
+
+Crear Crud Fuera del ADMIN
+
+
+============================================================
+
+Mensajes entre mismas ventanas.
+
+Se usa mecanismo de sesiones o cookies
+
+activar mensajería de django en settings.py, se puede mandar a html y después a vistas, o por ahí.
+
+============================================================
+
+Paginación sin admin.
+
+Se hace un template de paginator, el cual se copio el enlace dentro de paginator.html
+-Dentro de la view de lsitar, se hizo la paginacion, además de importar las clases necesarias para el paginator.
+
+
+============================================================
+
+LOGIN 
+
+Crear carpeta en app registrarion con un login.html y en urls que no vienen por defecto, darle url ahí.
+y en ulrs creadas, darle login redirect y logout redirect.
+
+
+============================================================
+
+Registro de usuario.
+
+Crear template, view y url.
+ El formulario se hace desde forms, para validación.
+
+
+============================================================
+
+Autorizaciones y permisos
+
+poner en listar.html y base.html los if de las auth
+
+y en views import login_required, permission_required
+
+============================================================
+
+Validaciones:
+
+Si se quisiera no requerir la imagen en el formulario, se hace en el form.py
+Sin embargo, se creará un validador personalizado dentro de carpeta app de aplicacion
+
+Para usar las validaciones dentro del admin de django, se exporta dentro de admin.py
+
+
+============================================================
+
+Crear api
+
+- ponerlo requeriments
+-pip install -r requirements.txt
+- cargarlo en settings.py en installed_apps
+-en app del modulo crear serializers.py
+
+
+
+==============================================================
+==============================================================
+
+
+Login con facebook. PASOS BAJADOS DE INTERNET
+
+#agregar en requirements.txt
+social-auth-app-django
+
+
+#agregar a installed_apps
+
+python manage.py migrate
+
+'social_django',
+
+#en el archivo principal de urls
+path('social-auth/', include('social_django.urls', namespace="social")),
+
+
+
+
+#tokens
+
+#ponerlo en settings
+SOCIAL_AUTH_FACEBOOK_KEY = "key"
+SOCIAL_AUTH_FACEBOOK_SECRET = "secret"
+
+#agregar al final del settings.py
+
+#ponerlo al final del settings
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+#enlace para login.html
+<a href="{% url 'social:begin' 'facebook' %}">Ingresar con facebook</a>
+
+
+#agregar a context_proccessors
+
+'social_django.context_processors.backends', 
+'social_django.context_processors.login_redirect',
+
+
+#obtener campos adicionales desde facebook
+#con esta configuracion podemos traer el email y la imagen
+
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'user_link'] 
+
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {  
+  'fields': 'id, name, email, picture.type(large), link'
+}
+
+
+SOCIAL_AUTH_FACEBOOK_EXTRA_DATA = [               
+    ('name', 'name'),
+    ('email', 'email'),
+    ('picture', 'picture'),
+    ('link', 'profile_url'),
+]
+
+#para agregar la imagen en base.html agregar:
+ {% for auth in backends.associated %}
+
+    {% if auth.provider == 'facebook' %}
+        <img src="{{ auth.extra_data.picture.data.url }}" alt="" width="50" height="50">
+    {% endif %}
+
+{% endfor %}
+
+#excepciones
+
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+LOGIN_ERROR_URL = '/error-facebook/'
+
+#agregar a middleware
+'social_django.middleware.SocialAuthExceptionMiddleware',
+
+
+

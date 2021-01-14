@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <title>Ingreso Al sistema</title>
+</head>
+<body>
+    {% load crispy_forms_tags %}
+    <div class="container">
+        <br>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-12 col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h2>Ingresa tus credenciales</h2>
+                        <hr>
+                        <form action="" method="post">
+
+                            {% csrf_token %}
+                            {{ form | crispy }}
+                            <br>
+                            <a href="{% url 'home' %}">Ir al home</a>
+                            <a href="{% url 'registro' %}">registrate</a>
+                            <input type="submit" value="ingresar" class="btn btn-success float-end"> <!--Imortar las urls de autenticación en urls NO creadas-->
+                        </form>
+                        <!--<a href="{% url 'social:begin' 'facebook' %}">continuar con facebook</a>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
